@@ -14,7 +14,10 @@ namespace int_vector
         explicit IntVector(size_t initial_capacity);
         IntVector(const IntVector &other);
         IntVector &operator=(const IntVector &other);
-        ~IntVector();
+        ~IntVector()
+        {
+            delete[] data_;
+        }
 
         size_t size() const
         {
@@ -43,7 +46,7 @@ namespace int_vector
         size_t size_;
         size_t capacity_;
 
-        void resize_internal(size_t new_capacity);
+        void resize(size_t new_capacity);
     };
 
     std::ostream &operator<<(std::ostream &out, const IntVector &v);
