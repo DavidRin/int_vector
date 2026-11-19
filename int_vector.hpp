@@ -33,11 +33,15 @@ namespace int_vector
         }
         void push_back(int value);
         int pop_back();
+        void insert(size_t index, int value);
+        void clear();
         int &at(size_t index);
         const int &at(size_t index) const;
         int &operator[](size_t index);
         const int &operator[](size_t index) const;
 
+        bool operator==(const IntVector &other) const;
+        bool operator!=(const IntVector &other) const;
         IntVector operator+(const IntVector &other) const;
         friend std::ostream &operator<<(std::ostream &os, const IntVector &v);
 
