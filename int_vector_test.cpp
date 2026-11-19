@@ -205,3 +205,65 @@ TEST_CASE("operator<<", "[operator]") {
 
     REQUIRE(ss.str() == "[1, 2, 3]");
 }
+
+// 16. insert()
+TEST_CASE("IntVector::insert() inserts at beginning, middle, end and throws out_of_range", "[modifier]") {
+    IntVector v;
+    v.insert(0, 20); // in leeren Vektor am Anfang
+    v.insert(0, 10); // vorne einfügen -> [10, 20]
+    v.insert(2, 40); // am Ende einfügen -> [10, 20, 40]
+    v.insert(2, 30); // in der Mitte einfügen -> [10, 20, 30, 40]
+
+    REQUIRE(v.size() == 4);
+    REQUIRE(v[0] == 10);
+    REQUIRE(v[1] == 20);
+    REQUIRE(v[2] == 30);
+    REQUIRE(v[3] == 40);
+
+    REQUIRE_THROWS_AS(v.insert(5, 99), std::out_of_range);
+}
+
+// 17. clear()
+TEST_CASE("IntVector::clear() resets size, keeps capacity, and zeroes memory", "[modifier]") {
+    IntVector v(5);
+    v.push_back(10);
+    v.push_back(20);
+    v.push_back(30);
+
+    size_t old_capacity = v.capacity();
+    REQUIRE(old_capacity >= 5);
+
+    v.clear();
+
+    REQUIRE(v.size() == 0);
+    REQUIRE(v.capacity() == old_capacity);
+    REQUIRE(v.empty() == true);
+    REQUIRE_THROWS_AS(v.at(0), std::out_of_range);
+
+    for (size_t i = 0; i < v.capacity(); i++) {
+        REQUIRE(v[i] == 0);
+    }
+}
+
+// 18. operator== und operator!=
+TEST_CASE("IntVector::operator== and operator!= compare vectors element-wise", "[operator]") {
+    IntVector a;
+    a.push_back(1);
+    a.push_back(2);
+    a.push_back(3);
+
+    IntVector b;
+    b.push_back(1);
+    b.push_back(2);
+    b.push_back(3);
+
+    IntVector c;
+    c.push_back(1);
+    c.push_back(99);
+    c.push_back(3);
+
+    REQUIRE(a == b);
+    REQUIRE_FALSE(a != b);
+    REQUIRE(a != c);
+    REQUIRE_FALSE(a == c);
+}

@@ -143,4 +143,46 @@ std::ostream& operator<<(std::ostream& out, const IntVector& v) {
     return out;
 }
 
+void IntVector::insert(size_t index, int value) {
+    if (index > size_) {
+        throw std::out_of_range("out of range");
+    }
+
+    if (size_ >= capacity_) {
+        size_t new_cap = 2;
+        if (capacity_ > 0) {
+            new_cap = capacity_ * 2;
+        }
+        resize(new_cap);
+    }
+
+    for (size_t i = size_; i > index; i--) {
+        data_[i] = data_[i - 1];
+    }
+
+    data_[index] = value;
+    size_++;
+}
+void IntVector::clear() {
+    for (size_t i = 0; i < capacity_; i++) {
+        data_[i] = 0;
+    }
+    size_ = 0;
+}
+
+bool IntVector::operator==(const IntVector& other) const {
+    if (size_ != other.size_) {
+        return false;
+    }
+    for (size_t i = 0; i < size_; i++) {
+        if (data_[i] != other.data_[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool IntVector::operator!=(const IntVector& other) const {
+    return !(*this == other);
+}
 }
