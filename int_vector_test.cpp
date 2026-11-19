@@ -1,6 +1,7 @@
 #include "int_vector.hpp"
 #include "catch_amalgamated.hpp"
 #include <sstream>
+#include <stdexcept>
 
 using int_vector::IntVector;
 
@@ -73,7 +74,7 @@ TEST_CASE("IntVector::capacity()", "[state]") {
     REQUIRE(v.capacity() == 4);
 
     // Kapazität überschreiten, um automatisches Vergrößern zu testen
-    for (int i = 0; i < 5; ++i) {
+    for (int i = 0; i < 5; i++) {
         v.push_back(i);
     }
     REQUIRE(v.capacity() >= 5);
@@ -121,7 +122,7 @@ TEST_CASE("IntVector::pop_back() ", "[modifier]") {
 }
 
 // 10. at() (non-const)
-TEST_CASE("IntVector::at() - Read/Write access with fallback", "[access]") {
+TEST_CASE("IntVector::at() - Read/Write access and out_of_range", "[access]") {
     IntVector v;
     v.push_back(11);
     v.push_back(22);
@@ -131,16 +132,16 @@ TEST_CASE("IntVector::at() - Read/Write access with fallback", "[access]") {
     v.at(1) = 99;
     REQUIRE(v.at(1) == 99);
 
-    // Fallback bei ungültigem Index
-    REQUIRE(v.at(5) == 11);
+    // Exception bei ungültigem Index
+    REQUIRE_THROWS_AS(v.at(5), std::out_of_range);
 
-    // Fallback bei leerem Vektor
+    // Exception bei leerem Vektor
     IntVector empty_vec;
-    REQUIRE(empty_vec.at(0) == 0);
+    REQUIRE_THROWS_AS(empty_vec.at(0), std::out_of_range);
 }
 
 // 11. at() const
-TEST_CASE("IntVector::at() const Read-only access with fallback", "[access]") {
+TEST_CASE("IntVector::at() const - Read-only access and out_of_range", "[access]") {
     IntVector temp;
     temp.push_back(33);
     temp.push_back(44);
@@ -148,7 +149,7 @@ TEST_CASE("IntVector::at() const Read-only access with fallback", "[access]") {
     const IntVector& v = temp;
     REQUIRE(v.at(0) == 33);
     REQUIRE(v.at(1) == 44);
-    REQUIRE(v.at(10) == 33); // Fallback
+    REQUIRE_THROWS_AS(v.at(10), std::out_of_range);
 }
 
 // 12. operator[] (non-const)
@@ -162,6 +163,7 @@ TEST_CASE("IntVector::operator[] read/write access", "[access]") {
     REQUIRE(v[1] == 50);
 }
 
+// 13. operator[] const
 TEST_CASE("IntVector::operator[] const read-only access", "[access]") {
     IntVector temp;
     temp.push_back(8);
